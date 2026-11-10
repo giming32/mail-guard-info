@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mail Guard 個人郵件工具的功能說明、Google API 權限與隱私權政策。">
+<title>功能說明 | Mail Guard</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cp-bg); color: var(--cp-text);
+  font: 17px/1.8 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+header, main, footer { max-width: 960px; margin: auto; padding: 24px; }
+header { display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  border-bottom: 1px solid var(--cp-border); flex-wrap: wrap; }
+.brand { color: var(--cp-accent); font-weight: 700; font-size: 1.25rem; text-decoration: none; }
+nav { display: flex; gap: 20px; flex-wrap: wrap; }
+a { color: var(--cp-link); text-underline-offset: 4px; }
+a:hover { color: var(--cp-accent-hover); }
+a:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 4px; }
+h1 { line-height: 1.25; font-size: clamp(2rem, 5vw, 2.8rem); margin: 12px 0 20px; }
+h2 { font-size: 1.3rem; margin-top: 32px; }
+.eyebrow { color: var(--cp-accent); letter-spacing: .08em; font-weight: 600; }
+.lead { color: var(--cp-text-muted); font-size: 1.15rem; }
+.notice { border-left: 4px solid var(--cp-accent); background: var(--cp-accent-soft);
+  padding: 16px 20px; border-radius: 0.625rem; }
+.card { background: var(--cp-surface); border: 1px solid var(--cp-border);
+  border-radius: 16px; padding: 24px; margin: 24px 0; }
+.meta, footer { color: var(--cp-text-muted); font-size: .9rem; }
+code { font: .9em Consolas, "Courier New", Courier, monospace;
+  background: var(--cp-surface-soft); padding: 2px 6px; border-radius: 0.625rem; overflow-wrap: anywhere; }
+li { margin: 8px 0; }
+footer { border-top: 1px solid var(--cp-border); }
+@media (max-width: 560px) { header, main, footer { padding: 20px; } .card { padding: 20px; } }
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="./">Mail Guard</a>
+<nav aria-label="主要導覽"><a href="./">功能說明</a><a href="privacy.html">隱私權政策</a><a href="terms.html">使用條款</a></nav>
+</header>
+<main><p class="eyebrow">PERSONAL MAIL UTILITY · 個人郵件工具</p>
+<h1>Mail Guard</h1>
+<p class="lead">協助帳號擁有者搜尋郵件、整理通知，以及辨識可能的釣魚信。</p>
+<p class="notice">Google OAuth 設定中的應用程式名稱為 <strong>Gmail read-only</strong>。
+本工具另有分開授權的警示標籤模組；唯讀功能和標籤功能的權限不同。</p>
+<section class="card">
+<h2>功能與使用方式</h2>
+<p>這是開發者自用、在 Windows 電腦執行的工具，不是公開提供信箱代管或登入的服務。
+本網站只提供應用程式資訊，不接受 Google 登入、不讀取訪客信件，也不收集 OAuth 憑證。</p>
+<ul>
+<li>透過 Gmail API 搜尋信件、讀取主旨、寄件者、內文、對話與標籤，以及彙整寄件者數量。</li>
+<li>以本機規則檢查寄件網域、驗證結果、連結與附件特徵；使用者可透過 Copilot 複核結果。</li>
+<li>在另外同意標籤權限後，替可疑或待確認的信件新增警示標籤。</li>
+<li>依帳號擁有者設定，將特定通知整理到本機報告或指定的試算表；相關附件可能保存在指定資料夾。</li>
+</ul>
+</section>
+<h2>Google API 權限</h2>
+<p><code>gmail.readonly</code> 用於讀取信件與標籤，這個模組不能寄信或修改信件。
+<code>gmail.modify</code> 用於獨立的警示標籤模組。Google 授予的 modify 權限本身較廣，
+但目前標籤程式只建立兩個警示標籤並將其中一個加到指定信件，不提供寄信、刪信或移除標籤的操作。</p>
+<h2>資料處理</h2>
+<p>資料可能由本機程式、使用者選用的 Copilot，以及選擇啟用的 TypeSafe Jev 輔助分析流程處理。
+使用者指定的雲端同步資料夾也可能同步報告。詳細範圍、儲存方式、第三方處理及撤回授權方式，
+請參閱<a href="privacy.html">隱私權政策</a>及<a href="terms.html">使用條款</a>。</p>
+<h2>不是安全保證</h2>
+<p>警示只供人工複核，可能漏判或誤判；沒有標籤不代表信件安全。請勿因分析結果就提供密碼、
+開啟可疑連結或執行附件。</p></main>
+<footer>個人用途的獨立工具，非 Google 官方產品，與 Google 無隸屬或背書關係。<br>
+問題回報：<a href="https://github.com/giming32/mail-guard-info/issues">公開說明網站的 Issues</a>（請勿提交信件、帳號資料、授權碼或憑證）。</footer>
+</body>
+</html>
